@@ -1,5 +1,7 @@
 import { SignUp } from '@clerk/nextjs';
 import React from 'react';
+import Image from 'next/image';
+import visual from '@/public/visual.svg';
 
 export default function Page() {
   return (
@@ -8,11 +10,13 @@ export default function Page() {
       <div className="hidden lg:flex lg:w-1/2 items-center justify-center">
         <div className="relative flex items-center justify-center h-full w-full">
           <div className="relative z-10 flex flex-col items-center justify-center">
-            <img
-              src="/visual.svg"
-              alt="Login Visual"
-              className="h-120 w-120 object-contain"
-            />
+            <Image
+                          width={120}
+                          height={120}
+                          src={visual}
+                          alt="Login Visual"
+                          className="h-120 w-120 object-contain"
+                        />
             <div className="absolute -top-20 -right-20 w-72 h-72 bg-blue-300/20 rounded-full blur-3xl -z-10 dark:bg-blue-700/20"></div>
             <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-indigo-300/20 rounded-full blur-3xl -z-10 dark:bg-indigo-700/20"></div>
           </div>
