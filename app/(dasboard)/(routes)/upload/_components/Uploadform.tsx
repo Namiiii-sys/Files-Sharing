@@ -1,37 +1,36 @@
 "use client"
+
 import React, { useState } from 'react'
 import FilePreview from './FilePreview'
+
 
 const Uploadform = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
-  const onFileSelect =(file) => {
+  const onFileSelect = (file: File) => {
     console.log('Selected file:', file)
-    if(file&&file.size>2000000)
-    {
-      alert("size is greater than 2 Mb")
-      return ;
+    if (file && file.size > 2_000_000) {
+      alert("File size is greater than 2MB. Please select a smaller file.")
+      return
     }
     setSelectedFile(file)
   }
 
- const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (file) {
-    onFileSelect(file);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      onFileSelect(file)
+    }
   }
-}
-
 
   const handleUpload = () => {
     if (!selectedFile) return
     console.log('Uploading:', selectedFile)
+    
   }
 
   return (
-    <div className="text-center">
-      
-
+    <section className="text-center">
       <div className="flex items-center justify-center w-4/5 mx-auto mt-10">
         <label
           htmlFor="dropzone-file"
@@ -75,7 +74,9 @@ const Uploadform = () => {
         </label>
       </div>
 
-     {file?} <FilePreview file={selectedFile} />
+      {/* File preview */}
+      {selectedFile && <FilePreview file={selectedFile} removeFile={() => setSelectedFile(null)} />}
+
       <button
         onClick={handleUpload}
         disabled={!selectedFile}
@@ -87,7 +88,7 @@ const Uploadform = () => {
       >
         Upload
       </button>
-    </div>
+    </section>
   )
 }
 
