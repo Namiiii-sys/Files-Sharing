@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 
 const Navbar = () => {
   return (
@@ -38,41 +39,30 @@ const Navbar = () => {
 
             
             <div className="flex items-center gap-4">
-              <div className="sm:flex sm:gap-4">
-                <Link
-                  href="/sign-in"
-                  className="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium dark:bg-gray-800 dark:text-white dark:hover:text-white/75 hover:bg-blue-800 hover:text-white"
-                >
-                  Login
-                </Link>
-                <div className="hidden sm:flex">
-                  <Link
-                    href="/sign-up"
-                    className="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium dark:bg-gray-800 dark:text-white dark:hover:text-white/75 hover:bg-blue-800 hover:text-white"
-                  >
-                    Register
-                  </Link>
-                </div>
-              </div>
+              
 
-              <div className="block md:hidden">
-                <button className="rounded-sm bg-gray-100 p-2 text-gray-600 transition hover:text-gray-800 dark:bg-gray-800 dark:text-white dark:hover:text-white/75">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="size-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </button>
-              </div>
+<div className="flex items-center gap-4">
+  
+  <SignedIn>
+    <UserButton 
+      afterSignOutUrl="/" 
+      appearance={{
+        elements: {
+          avatarBox: "w-8 h-8", 
+        }
+      }}
+    />
+  </SignedIn>
+
+  <SignedOut>
+    <div>
+      <button className="rounded-md bg-blue-600 text-white px-4 py-2 text-sm hover:bg-blue-700 transition">
+        <Link href="/sign-in" >Login</Link>
+      </button>
+    </div>
+  </SignedOut>
+</div>
+
             </div>
 
           </div>

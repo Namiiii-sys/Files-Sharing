@@ -33,7 +33,7 @@ export default function RootLayout({
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-black text-black dark:text-white`}>
          
           <Navbar className="p-4 flex justify-end">
-            <UserButton />
+            <UserButton className=" hover:bg-blue-800 hover:text-white z-50 bg-white" />
           </Navbar>
 
           {children}
