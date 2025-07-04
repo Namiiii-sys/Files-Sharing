@@ -74,7 +74,6 @@ const Uploadform = () => {
         </label>
       </div>
 
-      {/* File preview */}
       {selectedFile && <FilePreview file={selectedFile} removeFile={() => setSelectedFile(null)} />}
 
       <button

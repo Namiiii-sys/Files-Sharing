@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import { UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
+import { UserButton, SignedIn, SignedOut } from '@clerk/nextjs';
+import Image from 'next/image';
+import logo from '@/public/logo.png'
 
 const Navbar = () => {
   return (
@@ -11,8 +13,8 @@ const Navbar = () => {
           <div className="flex-1 md:flex md:items-center md:gap-12">
             <a href="#" className="block">
               <div className="h-12 w-12 rounded-full bg-white shadow-md flex items-center justify-center overflow-hidden">
-                <img
-                  src="/logo.png"
+                <Image
+                  src={logo}
                   alt="Logo"
                   className="h-full w-full object-contain"
                 />

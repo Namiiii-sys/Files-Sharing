@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { File, X } from 'lucide-react'
-import Image from 'next/image'
+
 
 const FilePreview = ({ file, removeFile }: { file: File, removeFile: (file: File) => void }) => {
   return (
