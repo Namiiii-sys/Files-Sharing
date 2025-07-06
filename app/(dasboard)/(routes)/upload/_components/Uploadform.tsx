@@ -1,14 +1,16 @@
-"use client"
+'use client'
 
 import React, { useState } from 'react'
 import FilePreview from './FilePreview'
 
+interface UploadFormProps {
+  onUpload: (file: File) => void
+}
 
-const Uploadform = () => {
+const Uploadform: React.FC<UploadFormProps> = ({ onUpload }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   const onFileSelect = (file: File) => {
-    console.log('Selected file:', file)
     if (file && file.size > 2_000_000) {
       alert("File size is greater than 2MB. Please select a smaller file.")
       return
@@ -25,8 +27,7 @@ const Uploadform = () => {
 
   const handleUpload = () => {
     if (!selectedFile) return
-    console.log('Uploading:', selectedFile)
-    
+    onUpload(selectedFile) // 👈 send file to parent
   }
 
   return (
@@ -74,7 +75,9 @@ const Uploadform = () => {
         </label>
       </div>
 
-      {selectedFile && <FilePreview file={selectedFile} removeFile={() => setSelectedFile(null)} />}
+      {selectedFile && (
+        <FilePreview file={selectedFile} removeFile={() => setSelectedFile(null)} />
+      )}
 
       <button
         onClick={handleUpload}
