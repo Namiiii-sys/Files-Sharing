@@ -2,11 +2,13 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import FileViewer from "./FileViewer";
 
-type Props = {
-  params: { id: string };
-};
+interface FilePageProps {
+  params: {
+    id: string;
+  };
+}
 
-export default async function FilePage({ params }: Props) {
+export default async function FilePage({ params }: FilePageProps) {
   const file = await prisma.file.findUnique({
     where: { shortId: params.id },
   });

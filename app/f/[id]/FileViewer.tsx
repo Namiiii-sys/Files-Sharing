@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
-import Image from "next/image";
 
 interface FileViewerProps {
   file: {
