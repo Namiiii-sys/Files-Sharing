@@ -1,13 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import FileViewer from "./FileViewer";
+import ClientFilePage from "./ClientFilePage";
 
-export default async function FilePage({ params }: { params: { id: string } }) {
+export default async function FilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   const file = await prisma.file.findUnique({
-    where: { shortId: params.id },
+    where: { shortId: id },
   });
 
   if (!file) return notFound();
 
-  return <FileViewer file={file} />;
+  return <ClientFilePage file={file} />;
 }

@@ -26,7 +26,12 @@ const Navbar = () => {
           <div className="md:flex md:items-center md:gap-12">
             <nav aria-label="Global" className="hidden md:block">
               <ul className="flex items-center gap-6 text-sm">
-                {['Home', 'Upload', 'About', 'Contact-us'].map((item) => (
+                <Link 
+                href='/'
+                className='text-gray-500 transition hover:text-gray-700 dark:text-white dark:hover:text-white/75'>
+                  Home
+                </Link>
+                {['Upload', 'File', 'Contact-us'].map((item) => (
                   <li key={item}>
                     <a
                       href={`/${item.toLowerCase().replace(' ', '-')}`}
@@ -36,6 +41,7 @@ const Navbar = () => {
                     </a>
                   </li>
                 ))}
+                
               </ul>
             </nav>
 

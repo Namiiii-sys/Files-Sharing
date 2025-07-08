@@ -71,12 +71,7 @@ export default function UploadForm() {
             onChange={handleFileSelect}
             className="hidden"
           />
-          <label
-            htmlFor="uploadFile1"
-            className="block px-6 py-2.5 rounded text-white text-sm tracking-wider font-semibold border-none outline-none cursor-pointer bg-blue-600 hover:bg-white hover:text-black"
-          >
-            Browse Files
-          </label>
+          
           <p className="text-xs text-slate-500 mt-4">
             PNG, JPG, SVG, WEBP, and GIF are allowed.
           </p>
@@ -102,7 +97,7 @@ export default function UploadForm() {
             width={200}
             height={200}
             alt="Uploaded"
-            className="max-w-sm mx-auto rounded-md shadow"
+            className="mx-auto rounded-md shadow"
           />
           <a
             href={imageUrl}

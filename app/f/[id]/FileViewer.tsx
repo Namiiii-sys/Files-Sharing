@@ -20,7 +20,7 @@ export default function FileViewer({ file }: FileViewerProps) {
 
   const shortUrl =
     typeof window !== "undefined"
-      ? `${window.location.origin}/f/${file.shortId}`
+      ? `${process.env.NEXT_PUBLIC_SITE_URL}/f/${file.shortId}`
       : "";
 
   const sendEmail = async () => {
@@ -46,7 +46,7 @@ export default function FileViewer({ file }: FileViewerProps) {
         setEmail("");
         setPassword("");
       } else {
-        toast.error("❌ Failed to send email.");
+        toast.error("Failed to send email.");
       }
     } catch (error) {
       toast.error("Something went wrong. Try again.");
@@ -58,26 +58,26 @@ export default function FileViewer({ file }: FileViewerProps) {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 max-w-4xl mx-auto mt-10 border rounded-2xl px-6 py-8 shadow bg-transparent">
-      {/* Left Column - File Preview */}
       <div className="w-full lg:w-1/2 flex flex-col items-center">
         <h1 className="text-xl font-semibold mb-4 text-center truncate w-full">
           File: {file.name}
         </h1>
 
         <div className="mb-4 flex justify-center">
-          <Image
-            src={file.url}
-            alt={file.name}
-            width={250}
-            height={250}
-            className="rounded-lg shadow-lg object-contain max-h-64"
-          />
+          <Image 
+        src={file.url}
+        alt={file.name}
+        width={250}
+        height={250}
+        style={{ width: '100%', height: 'auto' }}
+        className="rounded-lg shadow-lg"
+      />
         </div>
 
         <a
           href={file.url}
           download
-          className="mt-auto w-full max-w-xs bg-green-600 hover:bg-green-700 text-white text-center py-2 px-4 rounded-lg shadow transition"
+          className="mt-auto w-full max-w-xs hover:bg-blue-700 bg-blue-500  text-white text-center py-2 px-4 rounded-lg shadow transition"
         >
           Download File
         </a>
@@ -100,7 +100,7 @@ export default function FileViewer({ file }: FileViewerProps) {
             <button
               onClick={async () => {
                 await navigator.clipboard.writeText(shortUrl);
-                toast.success("🔗 Link copied!");
+                alert("🔗 Link copied!");
               }}
               className="p-3 bg-white text-black hover:text-white hover:bg-gray-700 rounded-lg transition"
               title="Copy to clipboard"
@@ -133,7 +133,7 @@ export default function FileViewer({ file }: FileViewerProps) {
             <button
               onClick={sendEmail}
               disabled={sending}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded shadow transition"
+              className="hover:bg-blue-700 bg-blue-500  text-white border-blue-500 px-4 py-2 rounded shadow transition"
             >
               {sending ? "Sending..." : "Send Link via Email"}
             </button>
