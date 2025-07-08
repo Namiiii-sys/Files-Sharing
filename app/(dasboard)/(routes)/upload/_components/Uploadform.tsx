@@ -1,10 +1,13 @@
 "use client";
 import { useState, useRef } from "react";
-import Image from 'next/image'
+import Image from 'next/image';
+import toast from 'react-hot-toast';
 
 export default function UploadForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [password, setPassword] = useState<string>("");
+  const [uploading, setUploading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,29 +18,53 @@ export default function UploadForm() {
   const handleUpload = async () => {
     if (!selectedFile) return;
 
+    setUploading(true);
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("upload_preset", "file_upload");
 
-    const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dqgkqacb8/image/upload", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dqgkqacb8/image/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-    const data = await cloudRes.json();
-    const secureUrl = data.secure_url;
-    setImageUrl(secureUrl);
+      const data = await cloudRes.json();
 
-    await fetch("/api/save-file", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: selectedFile.name,
-        type: selectedFile.type,
-        size: selectedFile.size,
-        url: secureUrl,
-      }),
-    });
+      if (!data.secure_url) {
+        toast.error("Upload to Cloudinary failed");
+        setUploading(false);
+        return;
+      }
+
+      const secureUrl = data.secure_url;
+      setImageUrl(secureUrl);
+
+      const saveRes = await fetch("/api/save-file", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: selectedFile.name,
+          type: selectedFile.type,
+          size: selectedFile.size,
+          url: secureUrl,
+          password: password || null,
+        }),
+      });
+
+      if (saveRes.ok) {
+        toast.success("File uploaded and saved!");
+      } else {
+        const errData = await saveRes.json();
+        toast.error(errData.error || "Failed to save file");
+      }
+
+    } catch (err) {
+      console.error("Upload error:", err);
+      toast.error("Something went wrong during upload.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -71,20 +98,29 @@ export default function UploadForm() {
             onChange={handleFileSelect}
             className="hidden"
           />
-          
           <p className="text-xs text-slate-500 mt-4">
-            PNG, JPG, SVG, WEBP, and GIF are allowed.
+            PNG, JPG, SVG, WEBP, and GIF are allowed. (2 MB)
           </p>
         </div>
       </div>
 
+    
       {selectedFile && !imageUrl && (
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-center flex flex-col gap-2">
+          <input
+            type="text"
+            placeholder="Set a password (optional)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border rounded text-sm text-gray-700"
+          />
+
           <button
             onClick={handleUpload}
+            disabled={uploading}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full shadow"
           >
-            Upload
+            {uploading ? "Uploading..." : "Upload"}
           </button>
         </div>
       )}
@@ -98,6 +134,7 @@ export default function UploadForm() {
             height={200}
             alt="Uploaded"
             className="mx-auto rounded-md shadow"
+            style={{ height: "auto", width: "auto" }}
           />
           <a
             href={imageUrl}

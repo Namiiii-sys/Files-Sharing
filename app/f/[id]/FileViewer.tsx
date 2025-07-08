@@ -71,7 +71,7 @@ export default function FileViewer({ file }: FileViewerProps) {
         height={250}
         style={{ width: '100%', height: 'auto' }}
         className="rounded-lg shadow-lg"
-      />
+/>
         </div>
 
         <a

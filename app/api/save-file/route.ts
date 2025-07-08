@@ -13,35 +13,38 @@ function hashPassword(password: string) {
 }
 
 export async function POST(req: NextRequest) {
-  console.log("[API] POST /api/save-file called");
+  console.log(" [API] POST /api/save-file called");
+
+  if (!process.env.DATABASE_URL) {
+    console.error(" DATABASE_URL is not defined");
+    return NextResponse.json({ error: "Database not configured" }, { status: 500 });
+  }
 
   try {
-    // Check if we're in build time and DATABASE_URL is available
-    if (!process.env.DATABASE_URL) {
-      console.error("DATABASE_URL not found");
-      return NextResponse.json({ error: "Database not configured" }, { status: 500 });
-    }
-
     const body = await req.json();
-    console.log("Received body:", body);
+    console.log(" Received body: ", body);
 
-    const {
-      name,
-      type,
-      size,
-      url,
-      password, 
-    } = body;
+    const { name, type, size, url, password } = body;
 
-    if (!name || !url || !size || !type) {
-      console.error("Missing file data in request");
-      return NextResponse.json({ error: "Missing file data." }, { status: 400 });
+    // Log individual fields for debugging
+    if (!name || !type || !size || !url) {
+      console.error(" Missing required field(s):", {
+        name,
+        type,
+        size,
+        url,
+      });
+
+      return NextResponse.json(
+        { error: "Missing one or more required file fields." },
+        { status: 400 }
+      );
     }
 
     const shortId = generateShortId();
-    console.log("Generated shortId:", shortId);
+    console.log(" Generated shortId:", shortId);
 
-    const saved = await prisma.file.create({
+    const savedFile = await prisma.file.create({
       data: {
         name,
         type,
@@ -52,11 +55,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("File saved in DB:", saved);
+    console.log(" File saved in DB:", savedFile);
 
     return NextResponse.json({ shortId });
-  } catch (err: unknown) {
-    console.error("Error in save-file route:", err);
+  } catch (err) {
+    console.error(" Error in /api/save-file:", err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
