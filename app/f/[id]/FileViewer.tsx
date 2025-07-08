@@ -1,18 +1,19 @@
 "use client";
+
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
 import Image from "next/image";
 
-type Props = {
+interface FileViewerProps {
   file: {
     name: string;
     url: string;
     shortId: string;
   };
-};
+}
 
-export default function FileViewer({ file }: Props) {
+export default function FileViewer({ file }: FileViewerProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [sending, setSending] = useState(false);
@@ -28,30 +29,36 @@ export default function FileViewer({ file }: Props) {
       return;
     }
 
-    setSending(true);
-    const res = await fetch("/api/send-mails", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        shortUrl,
-        password,
-      }),
-    });
+    try {
+      setSending(true);
+      const res = await fetch("/api/send-mails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          shortUrl,
+          password,
+        }),
+      });
 
-    setSending(false);
-
-    if (res.ok) {
-      alert("Email sent successfully!");
-      setEmail("");
-      setPassword("");
-    } else {
-      alert(" Failed to send email.");
+      if (res.ok) {
+        alert(" Email sent successfully!");
+        setEmail("");
+        setPassword("");
+      } else {
+        toast.error("❌ Failed to send email.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Try again.");
+      console.error("Email error:", error);
+    } finally {
+      setSending(false);
     }
   };
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 max-w-4xl mx-auto mt-10 border rounded-2xl px-6 py-8 shadow bg-transparent">
+      {/* Left Column - File Preview */}
       <div className="w-full lg:w-1/2 flex flex-col items-center">
         <h1 className="text-xl font-semibold mb-4 text-center truncate w-full">
           File: {file.name}
@@ -72,7 +79,7 @@ export default function FileViewer({ file }: Props) {
           download
           className="mt-auto w-full max-w-xs bg-green-600 hover:bg-green-700 text-white text-center py-2 px-4 rounded-lg shadow transition"
         >
-           Download File
+          Download File
         </a>
       </div>
 
@@ -93,7 +100,7 @@ export default function FileViewer({ file }: Props) {
             <button
               onClick={async () => {
                 await navigator.clipboard.writeText(shortUrl);
-                toast.success("Copied to clipboard!");
+                toast.success("🔗 Link copied!");
               }}
               className="p-3 bg-white text-black hover:text-white hover:bg-gray-700 rounded-lg transition"
               title="Copy to clipboard"
@@ -101,6 +108,7 @@ export default function FileViewer({ file }: Props) {
               <FiCopy size={18} />
             </button>
           </div>
+
           <p className="text-xs text-gray-500 mt-2 text-center">
             Share this link to allow file downloads
           </p>
