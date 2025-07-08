@@ -16,6 +16,12 @@ export async function POST(req: NextRequest) {
   console.log("[API] POST /api/save-file called");
 
   try {
+    // Check if we're in build time and DATABASE_URL is available
+    if (!process.env.DATABASE_URL) {
+      console.error("DATABASE_URL not found");
+      return NextResponse.json({ error: "Database not configured" }, { status: 500 });
+    }
+
     const body = await req.json();
     console.log("Received body:", body);
 
@@ -28,12 +34,12 @@ export async function POST(req: NextRequest) {
     } = body;
 
     if (!name || !url || !size || !type) {
-      console.error(" Missing file data in request");
+      console.error("Missing file data in request");
       return NextResponse.json({ error: "Missing file data." }, { status: 400 });
     }
 
     const shortId = generateShortId();
-    console.log(" Generated shortId:", shortId);
+    console.log("Generated shortId:", shortId);
 
     const saved = await prisma.file.create({
       data: {
@@ -46,13 +52,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log(" File saved in DB:", saved);
-    console.log(" Received body:", body);
-
+    console.log("File saved in DB:", saved);
 
     return NextResponse.json({ shortId });
   } catch (err: unknown) {
-    console.error(" Error in save-file route:", err);
+    console.error("Error in save-file route:", err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
