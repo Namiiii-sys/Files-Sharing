@@ -1,4 +1,5 @@
-'use client';
+"use client";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
 import Image from "next/image";
@@ -12,52 +13,124 @@ type Props = {
 };
 
 export default function FileViewer({ file }: Props) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [sending, setSending] = useState(false);
+
   const shortUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}/f/${file.shortId}`
       : "";
 
-  return (
-    <div className="flex flex-row gap-10 max-w-2xl mx-auto mt-10 border rounded-2xl p-8 shadow bg-transparent">
-      <div className="w-1/2">
-        <h1 className="text-xl font-semibold text-center mb-4">📁 File: {file.name}</h1>
+  const sendEmail = async () => {
+    if (!email) {
+      toast.error("Please enter an email.");
+      return;
+    }
 
-        <Image
-          src={file.url}
-          alt={file.name}
-          width={250}
-          height={250}
-          className="rounded shadow mx-auto max-h-80"
-        />
+    setSending(true);
+    const res = await fetch("/api/send-mails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        shortUrl,
+        password,
+      }),
+    });
+
+    setSending(false);
+
+    if (res.ok) {
+      alert("Email sent successfully!");
+      setEmail("");
+      setPassword("");
+    } else {
+      alert(" Failed to send email.");
+    }
+  };
+
+  return (
+    <div className="flex flex-col lg:flex-row gap-8 max-w-4xl mx-auto mt-10 border rounded-2xl px-6 py-8 shadow bg-transparent">
+      <div className="w-full lg:w-1/2 flex flex-col items-center">
+        <h1 className="text-xl font-semibold mb-4 text-center truncate w-full">
+          File: {file.name}
+        </h1>
+
+        <div className="mb-4 flex justify-center">
+          <Image
+            src={file.url}
+            alt={file.name}
+            width={250}
+            height={250}
+            className="rounded-lg shadow-lg object-contain max-h-64"
+          />
+        </div>
 
         <a
           href={file.url}
           download
-          className="mt-4 block bg-green-600 hover:bg-green-700 text-white text-center py-2 px-4 rounded shadow transition"
+          className="mt-auto w-full max-w-xs bg-green-600 hover:bg-green-700 text-white text-center py-2 px-4 rounded-lg shadow transition"
         >
-          Download File
+           Download File
         </a>
       </div>
 
-      <div className="mt-6 text-sm text-center w-1/2 flex flex-col justify-center gap-3">
-        <p className="mb-1">🔗 File Link:</p>
+      {/* Right Column - Link Sharing + Email */}
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
+        <h1 className="text-xl font-bold mb-6 text-center">
+          <span className="border-b-2 border-white pb-1">File Link</span>
+        </h1>
 
-        <input
-          type="text"
-          readOnly
-          value={shortUrl}
-          className="w-full text-xs px-2 py-2 border rounded text-center bg-transparent"
-        />
+        <div className="w-full max-w-md">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              readOnly
+              value={shortUrl}
+              className="flex-1 py-3 px-4 border text-gray-700 rounded-lg bg-gray-50 text-sm truncate"
+            />
+            <button
+              onClick={async () => {
+                await navigator.clipboard.writeText(shortUrl);
+                toast.success("Copied to clipboard!");
+              }}
+              className="p-3 bg-white text-black hover:text-white hover:bg-gray-700 rounded-lg transition"
+              title="Copy to clipboard"
+            >
+              <FiCopy size={18} />
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            Share this link to allow file downloads
+          </p>
 
-        <FiCopy
-          onClick={async () => {
-            await navigator.clipboard.writeText(shortUrl);
-            toast.success("📋 Link copied to clipboard!");
-          }}
-          className="text-white px-4 py-2 rounded shadow transition"
-        />
-          
-       
+          <div className="mt-6 flex flex-col gap-2">
+            <input
+              type="email"
+              placeholder="Recipient Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="px-4 py-2 border text-gray-700 rounded text-sm bg-gray-50"
+            />
+
+            <input
+              type="text"
+              placeholder="Password (optional)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="px-4 py-2 border rounded text-gray-700 text-sm bg-gray-50"
+            />
+
+            <button
+              onClick={sendEmail}
+              disabled={sending}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded shadow transition"
+            >
+              {sending ? "Sending..." : "Send Link via Email"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
