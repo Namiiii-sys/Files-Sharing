@@ -36,7 +36,7 @@ export default async function FilesPage() {
 
               <div className="mx-auto flex gap-3 p-3">
                 <Link
-                   href={`/f/${file.shortId}`}
+                   href={`/download/${file.shortId}`}
                    className="bg-blue-600 hover:bg-blue-800 text-sm rounded-full px-5 py-2 w-full mx-auto">
                     View
                 </Link>
