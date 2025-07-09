@@ -16,7 +16,7 @@ const Hero = () => {
 
         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
           <a
-            href="#"
+            href="/upload"
             className="inline-block rounded-md bg-indigo-600 px-6 py-3 text-white font-semibold shadow-md hover:bg-indigo-700 transition-colors"
           >
             Get Started

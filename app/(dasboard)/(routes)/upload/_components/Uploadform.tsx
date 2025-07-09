@@ -8,6 +8,7 @@ export default function UploadForm() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [password, setPassword] = useState<string>("");
   const [uploading, setUploading] = useState<boolean>(false);
+  const [shortId, setShortId] = useState<string | null>(null); // 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,11 +53,13 @@ export default function UploadForm() {
         }),
       });
 
-      if (saveRes.ok) {
+      const saveData = await saveRes.json();
+
+      if (saveRes.ok && saveData.shortId) {
+        setShortId(saveData.shortId); // ✅ Save shortId from response
         toast.success("File uploaded and saved!");
       } else {
-        const errData = await saveRes.json();
-        toast.error(errData.error || "Failed to save file");
+        toast.error(saveData.error || "Failed to save file");
       }
 
     } catch (err) {
@@ -104,7 +107,6 @@ export default function UploadForm() {
         </div>
       </div>
 
-    
       {selectedFile && !imageUrl && (
         <div className="mt-4 text-center flex flex-col gap-2">
           <input
@@ -125,7 +127,7 @@ export default function UploadForm() {
         </div>
       )}
 
-      {imageUrl && (
+      {imageUrl && shortId && (
         <div className="mt-6 text-center">
           <p className="text-sm font-medium text-slate-700 mb-2">Preview:</p>
           <Image
@@ -137,7 +139,7 @@ export default function UploadForm() {
             style={{ height: "auto", width: "auto" }}
           />
           <a
-            href={imageUrl}
+            href={`/f/${shortId}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 underline block mt-2 text-sm"

@@ -20,7 +20,7 @@ export default function FileViewer({ file }: FileViewerProps) {
 
   const shortUrl =
     typeof window !== "undefined"
-      ? `${process.env.NEXT_PUBLIC_SITE_URL}/f/${file.shortId}`
+      ? `${process.env.NEXT_PUBLIC_SITE_URL}/download/${file.shortId}`
       : "";
 
   const sendEmail = async () => {
@@ -57,7 +57,7 @@ export default function FileViewer({ file }: FileViewerProps) {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 max-w-4xl mx-auto mt-10 border rounded-2xl px-6 py-8 shadow bg-transparent">
+    <div className="flex flex-col lg:flex-row gap-8 max-w-4xl mx-auto mt-10 border rounded-2xl p-15 shadow bg-transparent">
       <div className="w-full lg:w-1/2 flex flex-col items-center">
         <h1 className="text-xl font-semibold mb-4 text-center truncate w-full">
           File: {file.name}
@@ -74,13 +74,6 @@ export default function FileViewer({ file }: FileViewerProps) {
 />
         </div>
 
-        <a
-          href={file.url}
-          download
-          className="mt-auto w-full max-w-xs hover:bg-blue-700 bg-blue-500  text-white text-center py-2 px-4 rounded-lg shadow transition"
-        >
-          Download File
-        </a>
       </div>
 
       {/* Right Column - Link Sharing + Email */}
