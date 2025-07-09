@@ -3,7 +3,7 @@ import Constants from '../_utils/Constant';
 
 const Hero = () => {
   return (
-    <section className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-900 min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <section className="h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-900 min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-3xl text-center">
         <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl dark:text-white leading-tight">
           <span className="text-blue-800">Upload, Save</span> and Easily <span className="text-blue-800">Share your files</span><br />
