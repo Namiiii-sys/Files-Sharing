@@ -57,7 +57,7 @@ export default function FileViewer({ file }: FileViewerProps) {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 max-w-4xl mx-auto mt-10 border rounded-2xl p-15 shadow bg-transparent">
+    <div className="flex flex-col lg:flex-row gap-8 max-w-4xl mx-auto mt-10 border rounded-2xl p-15 shadow bg-transparen mb-6">
       <div className="w-full lg:w-1/2 flex flex-col items-center">
         <h1 className="text-xl font-semibold mb-4 text-center truncate w-full">
           File: {file.name}
