@@ -137,7 +137,7 @@ export default function DownloadClient({ file }: Props) {
       {file.type === "application/pdf" && (
         <iframe
           src={file.url}
-          width="95%"
+          width="100%"
           height="400"
           className="rounded border"
         />

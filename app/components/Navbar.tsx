@@ -14,7 +14,6 @@ const Navbar = () => {
     { label: 'Home', href: '/' },
     { label: 'Upload', href: '/upload' },
     { label: 'Files', href: '/files' },
-    { label: 'Contact-us', href: '/contact-us' },
   ];
 
   return (

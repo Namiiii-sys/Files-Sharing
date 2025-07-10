@@ -166,7 +166,7 @@ export default function UploadForm() {
             href={`/f/${shortId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 underline block mt-3 text-sm"
+            className="text-blue-600 font-semibold block mt-3 text-md"
           >
             🔗 View / Download
           </a>

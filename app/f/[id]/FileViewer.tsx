@@ -121,7 +121,6 @@ export default function FileViewer({ file }: FileViewerProps) {
             Share this link to allow file downloads
           </p>
 
-          {/* email form */}
           <div className="mt-6 flex flex-col gap-2">
             <input
               type="email"

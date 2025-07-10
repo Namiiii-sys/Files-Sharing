@@ -5,6 +5,7 @@ interface File {
   name: string;
   url: string;
   shortId: string;
+  type: string;
   password: string | null;
 }
 
