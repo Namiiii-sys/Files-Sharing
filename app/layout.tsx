@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata = {
-  title: 'Glog',
+  title: 'Sharedex',
   description: 'A simple file sharing platform',
 }
 
