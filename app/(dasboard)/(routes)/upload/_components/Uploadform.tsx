@@ -79,7 +79,7 @@ export default function UploadForm() {
   };
 
   return (
-    <div className="h-screen max-w-md mx-auto mt-10">
+    <div className="h-full max-w-md mx-auto mt-10">
       <div
         className="bg-transparent hover:bg-gray-800 text-center px-4 rounded flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed"
         onClick={() => inputRef.current?.click()}
