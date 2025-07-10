@@ -1,54 +1,24 @@
 "use client";
-
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import Image from "next/image";
 
-interface File {
-  name: string;
-  url: string;
-  shortId: string;
-  password: string | null;
+interface Props {
+  file: {
+    name: string;
+    url: string;
+    shortId: string;
+    password: string | null;
+    type: string;
+  };
 }
 
-export default function DownloadClient({ file }: { file: File }) {
+export default function DownloadClient({ file }: Props) {
   const [passwordInput, setPasswordInput] = useState("");
   const [accessGranted, setAccessGranted] = useState(!file.password);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleDownload = async () => {
-  try {
-    const response = await fetch(file.url);
-    const blob = await response.blob();
-    
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = file.name;
-    link.style.display = "none";
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-   
-    URL.revokeObjectURL(link.href);
-    
-  } catch (error) {
-    console.error("Download failed:", error);
-    
-
-    const link = document.createElement("a");
-    link.href = file.url;
-    link.download = file.name;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-};
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +34,6 @@ export default function DownloadClient({ file }: { file: File }) {
     });
 
     const result = await res.json();
-
     if (result.success) {
       setAccessGranted(true);
     } else {
@@ -72,30 +41,65 @@ export default function DownloadClient({ file }: { file: File }) {
     }
   };
 
-  if (!accessGranted && file.password) {
+  const handleDownload = async () => {
+    try {
+      setIsDownloading(true);
+      
+      // Fetch the file as blob
+      const response = await fetch(file.url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch file');
+      }
+      
+      const blob = await response.blob();
+      
+      // Create blob URL
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      // Create temporary anchor element
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = file.name;
+      
+      // Append to body, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up blob URL
+      window.URL.revokeObjectURL(blobUrl);
+      
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Download failed. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  if (file.password && !accessGranted) {
     return (
       <div className="max-w-md mx-auto mt-20 px-6">
         <h1 className="text-xl font-bold mb-4 text-center">
           This file is password-protected
         </h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 relative">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Enter password"
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
+              placeholder="Enter password"
               required
-              className="w-full px-4 py-2 pr-10 border rounded bg-white text-black"
+              className="w-full px-4 py-2 pr-10 border rounded"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute top-2.5 right-3 text-gray-500"
-              title={showPassword ? "Hide password" : "Show password"}
+              className="absolute top-2.5 right-3 text-gray-600"
             >
-              {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+              {showPassword ? <FiEyeOff /> : <FiEye />}
             </button>
           </div>
 
@@ -112,25 +116,46 @@ export default function DownloadClient({ file }: { file: File }) {
     );
   }
 
-  // ✅ After password is verified or no password
   return (
-    <div className="max-w-md mx-auto mt-20 px-6 text-center">
-      <h1 className="text-xl font-semibold mb-4">Ready to download:</h1>
+    <div className="max-w-2xl mx-auto mt-10 px-4 text-center">
+      <h2 className="text-xl font-semibold mb-4">{file.name}</h2>
+      
+      {file.type.startsWith("image/") && (
+        <div className="flex justify-center">
+          <Image
+            src={file.url}
+            alt={file.name}
+            width={400}
+            height={300}
+            className="mx-auto max-h-96 rounded shadow object-contain"
+            style={{ maxHeight: "24rem", width: "auto", height: "auto" }}
+            unoptimized
+          />
+        </div>
+      )}
 
-      <Image
-        src={file.url}
-        alt={file.name}
-        width={300}
-        height={300}
-        className="rounded shadow mx-auto mb-6"
-        style={{ height: "auto", width: "auto" }}
-      />
+      {file.type === "application/pdf" && (
+        <iframe
+          src={file.url}
+          width="95%"
+          height="400"
+          className="rounded border"
+        />
+      )}
+
+      {file.type.startsWith("application/") && !file.type.includes("pdf") && (
+        <div className="flex flex-col items-center mt-4">
+          <div className="text-4xl mb-2">📄</div>
+          <p className="text-sm text-gray-700 font-medium">{file.name}</p>
+        </div>
+      )}
 
       <button
         onClick={handleDownload}
-        className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded shadow transition"
+        disabled={isDownloading}
+        className="inline-block mt-6 bg-blue-600 text-white px-6 py-2 mb-8 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        ⬇ Download File
+        {isDownloading ? "Downloading..." : "Download"}
       </button>
     </div>
   );
