@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   shortId: string;
-  /** Optional: let parent optimistically update UI */
   onSuccess?: (shortId: string) => void;
 }
 
 export default function DeleteFileForm({ shortId, onSuccess }: Props) {
   const [deleting, setDeleting] = useState(false);
-  const router = useRouter();               // for router.refresh()
+  const router = useRouter();              
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,10 +26,9 @@ export default function DeleteFileForm({ shortId, onSuccess }: Props) {
       });
 
       if (res.ok) {
-        // 1) let parent remove card instantly if callback provided
         onSuccess?.(shortId);
-        // 2) also refresh data (cheap, no full reload)
         router.refresh();
+        alert('File deleted! ')
       } else {
         alert("Failed to delete file.");
       }
