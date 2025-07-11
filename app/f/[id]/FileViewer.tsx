@@ -75,7 +75,7 @@ export default function FileViewer({ file }: FileViewerProps) {
 
     return (
       <div className="flex flex-col items-center gap-2 text-gray-600">
-        <span className="text-4xl">📄</span>
+        <span className="text-4xl"></span>
         <span className="text-sm font-medium">{file.name}</span>
       </div>
     );

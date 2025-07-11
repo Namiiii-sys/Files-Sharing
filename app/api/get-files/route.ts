@@ -1,14 +1,18 @@
-import { prisma } from "@/lib/prisma";
+
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET() {
-  try {
-    const files = await prisma.file.findMany({
-      orderBy: { createdAt: "desc" },
-    });
-    return NextResponse.json({ files });
-  } catch (err) {
-    console.error("Error fetching files:", err);
-    return NextResponse.json({ error: "Failed to fetch files" }, { status: 500 });
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ files: [] });   
   }
+
+  const files = await prisma.file.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return NextResponse.json({ files });
 }

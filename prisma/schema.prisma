@@ -16,4 +16,5 @@ model File {
   password  String?
   shortId   String   @unique
   createdAt DateTime @default(now())
+  userId    String 
 }

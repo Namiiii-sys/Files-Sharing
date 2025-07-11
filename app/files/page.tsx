@@ -1,4 +1,4 @@
-"use client"; // Add this!
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -27,9 +27,8 @@ export default function FilesPage() {
     fetchFiles();
   }, []);
 
-  const handleDelete = (idToDelete: string) => {
-    setFiles(prev => prev.filter(file => file.shortId !== idToDelete));
-  };
+  const handleDelete = (sid: string) =>
+    setFiles(prev => prev.filter(f => f.shortId !== sid));
 
   return (
     <section className="h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-900">
@@ -39,12 +38,12 @@ export default function FilesPage() {
         </h1>
 
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <p className="text-gray-500 text-center">Loading…</p>
         ) : files.length === 0 ? (
-          <p className="text-gray-500">No files uploaded yet.</p>
+          <p className="text-gray-500 text-center">No files uploaded yet.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {files.map((file) => (
+            {files.map(file => (
               <div
                 key={file.id}
                 className="border rounded-lg shadow p-4 flex flex-col gap-2 bg-transparent hover:bg-gray-700"
@@ -65,7 +64,7 @@ export default function FilesPage() {
                 <div className="mx-auto flex gap-3 p-3">
                   <Link
                     href={`/download/${file.shortId}`}
-                    className="bg-blue-600 hover:bg-blue-800 text-sm rounded-full px-5 py-2 w-full mx-auto"
+                    className="bg-blue-600 hover:bg-blue-800 text-sm rounded-full px-5 py-2 w-full text-center"
                   >
                     View
                   </Link>
