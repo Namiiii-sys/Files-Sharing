@@ -72,7 +72,7 @@ export default function FileViewer({ file }: FileViewerProps) {
       );
     }
 
-    // Fallback for DOC, ZIP, etc.
+
     return (
       <div className="flex flex-col items-center gap-2 text-gray-600">
         <span className="text-4xl">📄</span>

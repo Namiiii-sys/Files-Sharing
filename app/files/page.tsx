@@ -18,7 +18,6 @@ export default function FilesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch files from your API
     const fetchFiles = async () => {
       const res = await fetch("/api/get-files");
       const data = await res.json();
@@ -34,8 +33,8 @@ export default function FilesPage() {
 
   return (
     <section className="h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-900">
-      <div className="max-w-3xl mx-auto p-12 px-4">
-        <h1 className="text-2xl text-gray-400 font-bold mb-6 text-center py-2">
+      <div className="max-w-3xl mx-auto py-7 px-4">
+        <h1 className="text-2xl text-gray-400 font-bold mb-6 text-center">
           All Uploaded Files
         </h1>
 

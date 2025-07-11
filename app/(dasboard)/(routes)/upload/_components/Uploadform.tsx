@@ -10,6 +10,7 @@ export default function UploadForm() {
   const [password, setPassword] = useState<string>("");
   const [uploading, setUploading] = useState<boolean>(false);
   const [shortId, setShortId] = useState<string | null>(null);
+  const [id, setId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,12 +64,15 @@ export default function UploadForm() {
 
       const saveData = await saveRes.json();
 
-      if (saveRes.ok && saveData.shortId) {
+      if (saveRes.ok && saveData.shortId && saveData.id) {
         setShortId(saveData.shortId);
-        toast.success("File uploaded and saved!");
+        setId(saveData.id)
+        alert("File uploaded and saved!");
       } else {
-        toast.error(saveData.error || "Failed to save file");
+        alert(saveData.error || "Failed to save file");
       }
+
+      
 
     } catch (err) {
       console.error("Upload error:", err);
@@ -164,7 +168,7 @@ export default function UploadForm() {
             )}
 
             <a
-              href={`/f/${shortId}`}
+              href={`/f/${id}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 font-semibold block mt-3 text-md hover:underline"

@@ -6,7 +6,7 @@ export default async function FilePage({ params }: { params: Promise<{ id: strin
   const { id } = await params;
 
   const file = await prisma.file.findUnique({
-    where: { shortId: id },
+    where: { id: id },
   });
 
   if (!file) return notFound();
